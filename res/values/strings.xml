@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+     SPDX-FileCopyrightText: 2026 The LineageOS Project
+     SPDX-License-Identifier: Apache-2.0
+-->
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <string name="app_name">Lumia settings</string>
+
+    <!-- Settings > System entry -->
+    <string name="summary_profile">Profile: <xliff:g id="profile" example="Balanced">%1$s</xliff:g></string>
+    <string name="summary_double_tap_on">double tap to wake on</string>
+    <string name="summary_double_tap_off">double tap to wake off</string>
+    <string name="summary_default">Device settings</string>
+
+    <!-- Main page -->
+    <string name="category_performance">Performance</string>
+    <string name="category_gestures">Gestures</string>
+    <string name="category_buttons">Capacitive keys</string>
+
+    <string name="double_tap_title">Double tap to wake</string>
+    <string name="double_tap_summary">Tap the screen twice to turn it on while it is off</string>
+
+    <string name="navbar_title">On-screen navigation bar</string>
+    <string name="navbar_summary">Use the on-screen bar or gestures and turn off the Back, Start and Search keys</string>
+    <string name="button_brightness_title">Key backlight</string>
+    <string name="button_backlight_title">Key backlight</string>
+    <string name="button_backlight_summary">Light the Back, Start and Search keys</string>
+    <string name="button_timeout_title">Turn the key light off after</string>
+    <string name="button_timeout_never">Never, while the screen is on</string>
+    <plurals name="button_timeout_seconds">
+        <item quantity="one"><xliff:g id="seconds" example="1">%d</xliff:g> second</item>
+        <item quantity="other"><xliff:g id="seconds" example="5">%d</xliff:g> seconds</item>
+    </plurals>
+    <string name="button_only_when_pressed_title">Light only when touched</string>
+    <string name="button_only_when_pressed_summary">Light the keys when you touch them, not when you touch the screen</string>
+
+    <!-- Performance profiles -->
+    <string name="perf_profile_title">Performance profile</string>
+    <string name="perf_profile_tile_label">Performance</string>
+
+    <string name="profile_power_save">Power save</string>
+    <string name="profile_power_save_summary">All four cores up to <xliff:g id="frequency" example="1.04 GHz">%1$s</xliff:g>, no boosts on touch or app launch. Longest battery life; scrolling and app starts are slower.</string>
+    <string name="profile_efficiency">Efficiency</string>
+    <string name="profile_efficiency_summary">All four cores up to <xliff:g id="frequency" example="1.04 GHz">%1$s</xliff:g>, with short boosts on touch and app launch within that limit. Saves battery and feels smoother than Power save.</string>
+    <string name="profile_balanced">Balanced</string>
+    <string name="profile_balanced_summary">Full frequency range, with short boosts on touch and app launch. Recommended.</string>
+    <string name="profile_quick">Quick</string>
+    <string name="profile_quick_summary">The cores never go below <xliff:g id="frequency" example="1.19 GHz">%1$s</xliff:g>, with the usual boosts. Quicker response for a little more battery.</string>
+    <string name="profile_performance">Performance</string>
+    <string name="profile_performance_summary">All four cores held at <xliff:g id="frequency" example="2.26 GHz">%1$s</xliff:g>. Uses the most battery and warms the phone; thermal protection still slows the cores when hot.</string>
+    <string name="profile_performance_summary_no_freq">All four cores held at their highest frequency. Uses the most battery and warms the phone; thermal protection still slows the cores when hot.</string>
+
+    <string name="profile_battery_saver_summary"><xliff:g id="profile" example="Power save">%1$s</xliff:g> (Battery Saver)</string>
+    <string name="profile_battery_saver_note">Battery Saver is on and uses Power save. Choosing another profile turns Battery Saver off.</string>
+    <string name="profile_footer">The four cores always stay online: the phone\'s firmware does not allow switching cores off, so the profiles change only the CPU frequency limits and the boosts. Thermal protection always has the last word.</string>
+    <string name="profile_unavailable">This build has no performance profiles: the power HAL reports none.</string>
+
+    <!-- Tiles -->
+    <string name="double_tap_tile_label">Double tap</string>
+    <string name="tile_on">On</string>
+    <string name="tile_off">Off</string>
+</resources>

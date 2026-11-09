@@ -1,0 +1,28 @@
+//
+// SPDX-FileCopyrightText: 2026 The LineageOS Project
+// SPDX-License-Identifier: Apache-2.0
+//
+
+// Device settings of the MSM8974 Lumias (1520 "bandit", 930 "martini") on
+// LineageOS 18.1: performance profiles, double tap to wake and the
+// capacitive keys, with Quick Settings tiles and a launcher icon. Every
+// setting goes through the LineageOS or AOSP service that owns it.
+android_app {
+    name: "LumiaParts",
+    srcs: ["src/**/*.java"],
+    resource_dirs: ["res"],
+    certificate: "platform",
+    platform_apis: true,
+    system_ext_specific: true,
+
+    static_libs: [
+        "org.lineageos.platform.internal",
+        "org.lineageos.settings.resources",
+    ],
+
+    // lineage-sdk is not on the bootclasspath of 18.1 and is linked in, as
+    // in LineageParts; no R8 until a shrunk build is tested on a phone.
+    optimize: {
+        enabled: false,
+    },
+}

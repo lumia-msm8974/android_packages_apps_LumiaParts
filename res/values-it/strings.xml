@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+     SPDX-FileCopyrightText: 2026 The LineageOS Project
+     SPDX-License-Identifier: Apache-2.0
+-->
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <string name="app_name">Impostazioni Lumia</string>
+
+    <!-- Settings > System entry -->
+    <string name="summary_profile">Profilo: <xliff:g id="profile" example="Bilanciato">%1$s</xliff:g></string>
+    <string name="summary_double_tap_on">doppio tocco attivo</string>
+    <string name="summary_double_tap_off">doppio tocco disattivato</string>
+    <string name="summary_default">Impostazioni del dispositivo</string>
+
+    <!-- Main page -->
+    <string name="category_performance">Prestazioni</string>
+    <string name="category_gestures">Gesti</string>
+    <string name="category_buttons">Tasti capacitivi</string>
+
+    <string name="double_tap_title">Doppio tocco per riattivare</string>
+    <string name="double_tap_summary">Tocca due volte lo schermo spento per accenderlo</string>
+
+    <string name="navbar_title">Barra di navigazione a schermo</string>
+    <string name="navbar_summary">Usa la barra a schermo o i gesti e spegni i tasti Indietro, Start e Cerca</string>
+    <string name="button_brightness_title">Retroilluminazione dei tasti</string>
+    <string name="button_backlight_title">Retroilluminazione dei tasti</string>
+    <string name="button_backlight_summary">Illumina i tasti Indietro, Start e Cerca</string>
+    <string name="button_timeout_title">Spegni la luce dei tasti dopo</string>
+    <string name="button_timeout_never">Mai, finché lo schermo è acceso</string>
+    <plurals name="button_timeout_seconds">
+        <item quantity="one"><xliff:g id="seconds" example="1">%d</xliff:g> secondo</item>
+        <item quantity="other"><xliff:g id="seconds" example="5">%d</xliff:g> secondi</item>
+    </plurals>
+    <string name="button_only_when_pressed_title">Accendi solo al tocco dei tasti</string>
+    <string name="button_only_when_pressed_summary">Illumina i tasti quando li tocchi, non quando tocchi lo schermo</string>
+
+    <!-- Performance profiles -->
+    <string name="perf_profile_title">Profilo prestazioni</string>
+    <string name="perf_profile_tile_label">Prestazioni</string>
+
+    <string name="profile_power_save">Massimo risparmio</string>
+    <string name="profile_power_save_summary">Tutti e quattro i core fino a <xliff:g id="frequency" example="1,04 GHz">%1$s</xliff:g>, senza accelerazioni al tocco o all\'apertura delle app. La batteria dura di più; scorrimento e avvio delle app sono più lenti.</string>
+    <string name="profile_efficiency">Efficiente</string>
+    <string name="profile_efficiency_summary">Tutti e quattro i core fino a <xliff:g id="frequency" example="1,04 GHz">%1$s</xliff:g>, con brevi accelerazioni al tocco e all\'apertura delle app entro quel limite. Risparmia batteria ed è più fluido di Massimo risparmio.</string>
+    <string name="profile_balanced">Bilanciato</string>
+    <string name="profile_balanced_summary">Tutte le frequenze, con brevi accelerazioni al tocco e all\'apertura delle app. Consigliato.</string>
+    <string name="profile_quick">Rapido</string>
+    <string name="profile_quick_summary">I core non scendono mai sotto <xliff:g id="frequency" example="1,19 GHz">%1$s</xliff:g>, con le solite accelerazioni. Risposta più pronta con un consumo un po\' più alto.</string>
+    <string name="profile_performance">Prestazioni</string>
+    <string name="profile_performance_summary">Tutti e quattro i core fissi a <xliff:g id="frequency" example="2,26 GHz">%1$s</xliff:g>. Consuma più batteria e scalda il telefono; la protezione termica rallenta comunque i core quando sono caldi.</string>
+    <string name="profile_performance_summary_no_freq">Tutti e quattro i core fissi alla frequenza massima. Consuma più batteria e scalda il telefono; la protezione termica rallenta comunque i core quando sono caldi.</string>
+
+    <string name="profile_battery_saver_summary"><xliff:g id="profile" example="Massimo risparmio">%1$s</xliff:g> (Risparmio energetico)</string>
+    <string name="profile_battery_saver_note">Il Risparmio energetico di Android è attivo e usa il profilo Massimo risparmio. Se scegli un altro profilo, il Risparmio energetico si disattiva.</string>
+    <string name="profile_footer">I quattro core restano sempre accesi: il firmware del telefono non permette di spegnerli, quindi i profili cambiano solo i limiti di frequenza della CPU e le accelerazioni. La protezione termica ha sempre l\'ultima parola.</string>
+    <string name="profile_unavailable">Questa build non ha profili prestazioni: il power HAL non ne indica nessuno.</string>
+
+    <!-- Tiles -->
+    <string name="double_tap_tile_label">Doppio tocco</string>
+    <string name="tile_on">Attivo</string>
+    <string name="tile_off">Disattivato</string>
+</resources>

@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+     SPDX-FileCopyrightText: 2026 The LineageOS Project
+     SPDX-License-Identifier: Apache-2.0
+-->
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:title="@string/app_name">
+
+    <PreferenceCategory
+        android:key="category_performance"
+        android:title="@string/category_performance">
+
+        <Preference
+            android:key="perf_profile"
+            android:title="@string/perf_profile_title"
+            android:icon="@drawable/ic_perf_profile"
+            android:persistent="false" />
+
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        android:key="category_gestures"
+        android:title="@string/category_gestures">
+
+        <SwitchPreference
+            android:key="double_tap_to_wake"
+            android:title="@string/double_tap_title"
+            android:summary="@string/double_tap_summary"
+            android:icon="@drawable/ic_double_tap"
+            android:persistent="false" />
+
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        android:key="category_buttons"
+        android:title="@string/category_buttons">
+
+        <SwitchPreference
+            android:key="navigation_bar"
+            android:title="@string/navbar_title"
+            android:summary="@string/navbar_summary"
+            android:persistent="false" />
+
+        <SeekBarPreference
+            android:key="button_brightness"
+            android:title="@string/button_brightness_title"
+            android:max="100"
+            app:min="0"
+            app:showSeekBarValue="true"
+            app:updatesContinuously="false"
+            android:persistent="false" />
+
+        <SwitchPreference
+            android:key="button_backlight"
+            android:title="@string/button_backlight_title"
+            android:summary="@string/button_backlight_summary"
+            android:persistent="false" />
+
+        <ListPreference
+            android:key="button_backlight_timeout"
+            android:title="@string/button_timeout_title"
+            android:dialogTitle="@string/button_timeout_title"
+            android:persistent="false" />
+
+        <SwitchPreference
+            android:key="button_backlight_only_when_pressed"
+            android:title="@string/button_only_when_pressed_title"
+            android:summary="@string/button_only_when_pressed_summary"
+            android:persistent="false" />
+
+    </PreferenceCategory>
+
+</PreferenceScreen>

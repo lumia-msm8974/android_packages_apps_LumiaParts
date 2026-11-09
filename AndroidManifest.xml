@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+     SPDX-FileCopyrightText: 2026 The LineageOS Project
+     SPDX-License-Identifier: Apache-2.0
+-->
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="org.lineageos.lumia.parts"
+    android:sharedUserId="android.uid.system">
+
+    <!-- PerformanceManager (lineage-sdk) -->
+    <uses-permission android:name="lineageos.permission.PERFORMANCE_ACCESS" />
+    <!-- LineageHardwareManager: is the key disabler there? -->
+    <uses-permission android:name="lineageos.permission.HARDWARE_ABSTRACTION_ACCESS" />
+    <!-- Settings.Secure.DOUBLE_TAP_TO_WAKE, LineageSettings button settings -->
+    <uses-permission android:name="android.permission.WRITE_SECURE_SETTINGS" />
+    <uses-permission android:name="lineageos.permission.WRITE_SETTINGS" />
+    <uses-permission android:name="lineageos.permission.WRITE_SECURE_SETTINGS" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+
+    <application
+        android:label="@string/app_name"
+        android:icon="@mipmap/ic_launcher"
+        android:roundIcon="@mipmap/ic_launcher"
+        android:allowBackup="false"
+        android:supportsRtl="true"
+        android:theme="@style/Theme.Main">
+
+        <!-- Launcher, Settings > System > Lumia settings, tile long press -->
+        <activity
+            android:name=".LumiaSettingsActivity"
+            android:label="@string/app_name"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="com.android.settings.action.IA_SETTINGS" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.service.quicksettings.action.QS_TILE_PREFERENCES" />
+            </intent-filter>
+            <meta-data
+                android:name="com.android.settings.category"
+                android:value="com.android.settings.category.ia.system" />
+            <meta-data
+                android:name="com.android.settings.title"
+                android:resource="@string/app_name" />
+            <meta-data
+                android:name="com.android.settings.summary_uri"
+                android:value="content://org.lineageos.lumia.parts.summary/getDynamicSummary" />
+            <meta-data
+                android:name="com.android.settings.icon"
+                android:resource="@drawable/ic_settings_lumia" />
+        </activity>
+
+        <activity
+            android:name=".PerformanceProfileActivity"
+            android:label="@string/perf_profile_title"
+            android:exported="false" />
+
+        <provider
+            android:name=".SummaryProvider"
+            android:authorities="org.lineageos.lumia.parts.summary"
+            android:exported="true" />
+
+        <!-- Hides the tiles of the features this build or phone does not have -->
+        <receiver
+            android:name=".BootReceiver"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+            </intent-filter>
+        </receiver>
+
+        <service
+            android:name=".PerformanceProfileTileService"
+            android:label="@string/perf_profile_tile_label"
+            android:icon="@drawable/ic_perf_profile"
+            android:permission="android.permission.BIND_QUICK_SETTINGS_TILE"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.service.quicksettings.action.QS_TILE" />
+            </intent-filter>
+        </service>
+
+        <service
+            android:name=".DoubleTapTileService"
+            android:label="@string/double_tap_tile_label"
+            android:icon="@drawable/ic_double_tap"
+            android:permission="android.permission.BIND_QUICK_SETTINGS_TILE"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.service.quicksettings.action.QS_TILE" />
+            </intent-filter>
+        </service>
+    </application>
+</manifest>
