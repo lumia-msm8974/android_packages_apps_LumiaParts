@@ -15,7 +15,11 @@
     <!-- Main page -->
     <string name="category_performance">Performance</string>
     <string name="category_gestures">Gestures</string>
+    <string name="category_display">Display</string>
     <string name="category_buttons">Capacitive keys</string>
+
+    <string name="low_resolution_title">Smoother graphics (720p)</string>
+    <string name="low_resolution_summary">Apps draw at 720p: animations and the notification shade are smoother, text is a little less sharp</string>
 
     <string name="double_tap_title">Double tap to wake</string>
     <string name="double_tap_summary">Tap the screen twice to turn it on while it is off</string>

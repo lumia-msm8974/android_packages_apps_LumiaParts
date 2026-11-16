@@ -15,7 +15,11 @@
     <!-- Main page -->
     <string name="category_performance">Prestazioni</string>
     <string name="category_gestures">Gesti</string>
+    <string name="category_display">Schermo</string>
     <string name="category_buttons">Tasti capacitivi</string>
+
+    <string name="low_resolution_title">Grafica più fluida (720p)</string>
+    <string name="low_resolution_summary">Le app disegnano a 720p: animazioni e tendina più fluide, testo un po\' meno nitido</string>
 
     <string name="double_tap_title">Doppio tocco per riattivare</string>
     <string name="double_tap_summary">Tocca due volte lo schermo spento per accenderlo</string>

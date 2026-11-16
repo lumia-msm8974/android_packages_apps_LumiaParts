@@ -20,6 +20,19 @@
     </PreferenceCategory>
 
     <PreferenceCategory
+        android:key="category_display"
+        android:title="@string/category_display">
+
+        <SwitchPreference
+            android:key="low_resolution"
+            android:title="@string/low_resolution_title"
+            android:summary="@string/low_resolution_summary"
+            android:icon="@drawable/ic_display"
+            android:persistent="false" />
+
+    </PreferenceCategory>
+
+    <PreferenceCategory
         android:key="category_gestures"
         android:title="@string/category_gestures">
 

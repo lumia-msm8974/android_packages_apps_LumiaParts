@@ -31,6 +31,7 @@ public class LumiaSettingsFragment extends PreferenceFragmentCompat
     private static final int[] TIMEOUTS_S = {0, 2, 5, 10, 15, 30};
 
     private Preference mPerfProfile;
+    private SwitchPreference mLowResolution;
     private SwitchPreference mDoubleTap;
     private SwitchPreference mNavbar;
     private SeekBarPreference mBrightness;
@@ -39,6 +40,7 @@ public class LumiaSettingsFragment extends PreferenceFragmentCompat
     private SwitchPreference mOnlyWhenPressed;
 
     private boolean mHasProfiles;
+    private boolean mHasLowResolution;
     private boolean mHasDoubleTap;
     private boolean mHasKeyDisabler;
     private boolean mHasBacklight;
@@ -52,6 +54,7 @@ public class LumiaSettingsFragment extends PreferenceFragmentCompat
         Context context = requireContext();
 
         mHasProfiles = PerformanceProfiles.isSupported(context);
+        mHasLowResolution = DisplayResolution.isSupported();
         mHasDoubleTap = DoubleTapToWake.isSupported(context);
         mHasKeyDisabler = Buttons.hasKeyDisabler(context);
         mHasBacklight = Buttons.hasBacklight(context);
@@ -61,6 +64,12 @@ public class LumiaSettingsFragment extends PreferenceFragmentCompat
         mPerfProfile.setIntent(new Intent(context, PerformanceProfileActivity.class));
         if (!mHasProfiles) {
             removeCategory("category_performance");
+        }
+
+        mLowResolution = findPreference("low_resolution");
+        mLowResolution.setOnPreferenceChangeListener(this);
+        if (!mHasLowResolution) {
+            removeCategory("category_display");
         }
 
         mDoubleTap = findPreference("double_tap_to_wake");
@@ -100,6 +109,7 @@ public class LumiaSettingsFragment extends PreferenceFragmentCompat
 
         mObserver = new SettingsObserver(context, this,
                 PerformanceProfiles.SETTING_URI, DoubleTapToWake.SETTING_URI,
+                DisplayResolution.SIZE_URI,
                 Buttons.NAVBAR_URI, Buttons.BRIGHTNESS_URI, Buttons.TIMEOUT_URI,
                 Buttons.ONLY_WHEN_PRESSED_URI);
     }
@@ -136,6 +146,9 @@ public class LumiaSettingsFragment extends PreferenceFragmentCompat
         }
         if (mHasProfiles) {
             mPerfProfile.setSummary(PerformanceProfiles.summary(context));
+        }
+        if (mHasLowResolution) {
+            mLowResolution.setChecked(DisplayResolution.isLowResolution());
         }
         if (mHasDoubleTap) {
             mDoubleTap.setChecked(DoubleTapToWake.isEnabled(context));
@@ -198,7 +211,9 @@ public class LumiaSettingsFragment extends PreferenceFragmentCompat
     @Override
     public boolean onPreferenceChange(Preference preference, Object newValue) {
         Context context = requireContext();
-        if (preference == mDoubleTap) {
+        if (preference == mLowResolution) {
+            DisplayResolution.setLowResolution((Boolean) newValue);
+        } else if (preference == mDoubleTap) {
             DoubleTapToWake.setEnabled(context, (Boolean) newValue);
         } else if (preference == mNavbar) {
             Buttons.setNavbarEnabled(context, (Boolean) newValue);

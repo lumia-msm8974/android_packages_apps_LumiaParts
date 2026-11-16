@@ -23,6 +23,7 @@ AOSP Settings and this app always show the same state:
 | Setting | Stored in | Applied by |
 |---|---|---|
 | Performance profile | `LineageSettings.Secure.PERFORMANCE_PROFILE` (lineage-sdk `PerformanceManager`) | `PerformanceManagerService` → `android.hardware.power-service-qti` (`power-8974.c`, `vendor.lineage.power` `SET_PROFILE`) → the device perf lock library (`lib<device>-perflock`, `ro.vendor.extension_library`) |
+| Smoother graphics (720p) | `Settings.Global.DISPLAY_SIZE_FORCED`, `Settings.Secure.DISPLAY_DENSITY_FORCED` (two thirds of the panel size and density, as `wm size` / `wm density`) | `WindowManagerService`; the MDP scales the frames up to the panel. On the Adreno 330 the notification shade drops from about 20 ms of GPU per frame at 1080p to a few ms |
 | Double tap to wake | `Settings.Secure.DOUBLE_TAP_TO_WAKE` | `PowerManagerService` → power HAL `Mode::DOUBLE_TAP_TO_WAKE` → `TARGET_TAP_TO_WAKE_NODE` (`/sys/devices/f9924000.i2c/i2c-2/2-004b/wake_gesture`, Synaptics driver) |
 | Navigation bar / key disabler | `LineageSettings.System.FORCE_SHOW_NAVBAR` | `PhoneWindowManager` → `vendor.lineage.touch@1.0` `IKeyDisabler` of the device |
 | Key backlight | `LineageSettings.Secure.BUTTON_BRIGHTNESS`, `BUTTON_BACKLIGHT_TIMEOUT`, `LineageSettings.System.BUTTON_BACKLIGHT_ONLY_WHEN_PRESSED` | `PowerManagerService` → lights HAL, buttons light (PM8941 KPDBL rows) |
