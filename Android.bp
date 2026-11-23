@@ -9,7 +9,10 @@
 // setting goes through the LineageOS or AOSP service that owns it.
 android_app {
     name: "LumiaParts",
-    srcs: ["src/**/*.java"],
+    srcs: [
+        "src/**/*.java",
+        ":LumiaCameraKeyConfig",
+    ],
     resource_dirs: ["res"],
     certificate: "platform",
     platform_apis: true,
@@ -23,6 +26,24 @@ android_app {
     // lineage-sdk is not on the bootclasspath of 18.1 and is linked in, as
     // in LineageParts; no R8 until a shrunk build is tested on a phone.
     optimize: {
+        enabled: false,
+    },
+}
+
+filegroup {
+    name: "LumiaCameraKeyConfig",
+    srcs: ["keyhandler/src/org/lineageos/lumia/keyhandler/CameraKeyConfig.java"],
+}
+
+// Camera button handler, loaded into system_server through
+// config_deviceKeyHandlerLibs. A small jar of its own, so system_server does
+// not open the whole app with lineage-sdk linked in.
+java_library {
+    name: "LumiaKeyHandler",
+    srcs: ["keyhandler/src/**/*.java"],
+    system_ext_specific: true,
+    installable: true,
+    dex_preopt: {
         enabled: false,
     },
 }

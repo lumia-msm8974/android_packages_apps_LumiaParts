@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+     SPDX-FileCopyrightText: 2026 The LineageOS Project
+     SPDX-License-Identifier: Apache-2.0
+-->
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    android:title="@string/camera_key_title">
+
+    <ListPreference
+        android:key="camera_key_short"
+        android:title="@string/camera_key_short_title"
+        android:dialogTitle="@string/camera_key_short_title"
+        android:persistent="false" />
+
+    <ListPreference
+        android:key="camera_key_long"
+        android:title="@string/camera_key_long_title"
+        android:dialogTitle="@string/camera_key_long_title"
+        android:persistent="false" />
+
+    <SwitchPreference
+        android:key="camera_key_screen_off"
+        android:title="@string/camera_key_screen_off_title"
+        android:summary="@string/camera_key_screen_off_summary"
+        android:persistent="false" />
+
+    <Preference
+        android:key="camera_key_footer"
+        android:summary="@string/camera_key_footer"
+        android:selectable="false"
+        android:persistent="false" />
+
+</PreferenceScreen>

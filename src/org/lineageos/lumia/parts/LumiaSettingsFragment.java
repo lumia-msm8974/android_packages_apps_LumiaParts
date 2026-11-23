@@ -16,6 +16,8 @@ import androidx.preference.PreferenceFragmentCompat;
 import androidx.preference.SeekBarPreference;
 import androidx.preference.SwitchPreference;
 
+import org.lineageos.lumia.keyhandler.CameraKeyConfig;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -33,6 +35,7 @@ public class LumiaSettingsFragment extends PreferenceFragmentCompat
     private Preference mPerfProfile;
     private SwitchPreference mLowResolution;
     private SwitchPreference mDoubleTap;
+    private Preference mCameraKey;
     private SwitchPreference mNavbar;
     private SeekBarPreference mBrightness;
     private SwitchPreference mBacklight;
@@ -42,6 +45,7 @@ public class LumiaSettingsFragment extends PreferenceFragmentCompat
     private boolean mHasProfiles;
     private boolean mHasLowResolution;
     private boolean mHasDoubleTap;
+    private boolean mHasCameraKey;
     private boolean mHasKeyDisabler;
     private boolean mHasBacklight;
     private boolean mBacklightToggleOnly;
@@ -56,6 +60,7 @@ public class LumiaSettingsFragment extends PreferenceFragmentCompat
         mHasProfiles = PerformanceProfiles.isSupported(context);
         mHasLowResolution = DisplayResolution.isSupported();
         mHasDoubleTap = DoubleTapToWake.isSupported(context);
+        mHasCameraKey = CameraKey.isSupported(context);
         mHasKeyDisabler = Buttons.hasKeyDisabler(context);
         mHasBacklight = Buttons.hasBacklight(context);
         mBacklightToggleOnly = Buttons.isBacklightToggleOnly(context);
@@ -76,6 +81,12 @@ public class LumiaSettingsFragment extends PreferenceFragmentCompat
         mDoubleTap.setOnPreferenceChangeListener(this);
         if (!mHasDoubleTap) {
             removeCategory("category_gestures");
+        }
+
+        mCameraKey = findPreference("camera_key");
+        mCameraKey.setIntent(new Intent(context, CameraKeyActivity.class));
+        if (!mHasCameraKey) {
+            removeCategory("category_camera_key");
         }
 
         mNavbar = findPreference("navigation_bar");
@@ -110,6 +121,8 @@ public class LumiaSettingsFragment extends PreferenceFragmentCompat
         mObserver = new SettingsObserver(context, this,
                 PerformanceProfiles.SETTING_URI, DoubleTapToWake.SETTING_URI,
                 DisplayResolution.SIZE_URI,
+                CameraKeyConfig.uri(CameraKeyConfig.SETTING_SHORT),
+                CameraKeyConfig.uri(CameraKeyConfig.SETTING_LONG),
                 Buttons.NAVBAR_URI, Buttons.BRIGHTNESS_URI, Buttons.TIMEOUT_URI,
                 Buttons.ONLY_WHEN_PRESSED_URI);
     }
@@ -152,6 +165,9 @@ public class LumiaSettingsFragment extends PreferenceFragmentCompat
         }
         if (mHasDoubleTap) {
             mDoubleTap.setChecked(DoubleTapToWake.isEnabled(context));
+        }
+        if (mHasCameraKey) {
+            mCameraKey.setSummary(CameraKey.summary(context));
         }
 
         boolean navbar = mHasKeyDisabler && Buttons.isNavbarEnabled(context);

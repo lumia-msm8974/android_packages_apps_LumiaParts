@@ -59,6 +59,11 @@
             android:label="@string/perf_profile_title"
             android:exported="false" />
 
+        <activity
+            android:name=".CameraKeyActivity"
+            android:label="@string/camera_key_title"
+            android:exported="false" />
+
         <provider
             android:name=".SummaryProvider"
             android:authorities="org.lineageos.lumia.parts.summary"

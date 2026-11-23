@@ -46,6 +46,18 @@
     </PreferenceCategory>
 
     <PreferenceCategory
+        android:key="category_camera_key"
+        android:title="@string/camera_key_title">
+
+        <Preference
+            android:key="camera_key"
+            android:title="@string/camera_key_title"
+            android:icon="@drawable/ic_camera_key"
+            android:persistent="false" />
+
+    </PreferenceCategory>
+
+    <PreferenceCategory
         android:key="category_buttons"
         android:title="@string/category_buttons">
 

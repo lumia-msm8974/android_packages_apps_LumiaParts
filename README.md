@@ -13,6 +13,9 @@ adds:
 - **Capacitive keys**: on-screen navigation bar (turns the Back, Start and
   Search keys off through the key disabler), key backlight level (or on/off),
   timeout and "only when touched";
+- **Camera button**: what a press and a long press do (camera, flashlight, an
+  app or nothing), with the screen on or off. In a camera app the button keeps
+  its two stages: half press focuses, full press takes the photo;
 - **Quick Settings tiles**: *Performance* (a tap cycles the profiles, a long
   press opens the page) and *Double tap*.
 
@@ -26,6 +29,7 @@ AOSP Settings and this app always show the same state:
 | Smoother graphics (720p) | `Settings.Global.DISPLAY_SIZE_FORCED`, `Settings.Secure.DISPLAY_DENSITY_FORCED` (two thirds of the panel size and density, as `wm size` / `wm density`) | `WindowManagerService`; the MDP scales the frames up to the panel. On the Adreno 330 the notification shade drops from about 20 ms of GPU per frame at 1080p to a few ms |
 | Double tap to wake | `Settings.Secure.DOUBLE_TAP_TO_WAKE` | `PowerManagerService` → power HAL `Mode::DOUBLE_TAP_TO_WAKE` → `TARGET_TAP_TO_WAKE_NODE` (`/sys/devices/f9924000.i2c/i2c-2/2-004b/wake_gesture`, Synaptics driver) |
 | Navigation bar / key disabler | `LineageSettings.System.FORCE_SHOW_NAVBAR` | `PhoneWindowManager` → `vendor.lineage.touch@1.0` `IKeyDisabler` of the device |
+| Camera button | `Settings.Secure` `lumia_camera_key_short`, `_long`, `_screen_off` | `LumiaKeyHandler.jar` in system_server (`config_deviceKeyHandlerLibs`); the device tree maps `KEY_CAMERA_SNAPSHOT` and `KEY_CAMERA_FOCUS` in `gpio-keys.kl` |
 | Key backlight | `LineageSettings.Secure.BUTTON_BRIGHTNESS`, `BUTTON_BACKLIGHT_TIMEOUT`, `LineageSettings.System.BUTTON_BACKLIGHT_ONLY_WHEN_PRESSED` | `PowerManagerService` → lights HAL, buttons light (PM8941 KPDBL rows) |
 
 Entries and tiles that the build does not support are hidden at run time:

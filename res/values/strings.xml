@@ -59,6 +59,22 @@
     <string name="profile_footer">The four cores always stay online: the phone\'s firmware does not allow switching cores off, so the profiles change only the CPU frequency limits and the boosts. Thermal protection always has the last word.</string>
     <string name="profile_unavailable">This build has no performance profiles: the power HAL reports none.</string>
 
+    <!-- Camera button -->
+    <string name="camera_key_title">Camera button</string>
+    <string name="camera_key_summary">Press: <xliff:g id="press" example="Open the camera">%1$s</xliff:g>. Hold: <xliff:g id="hold" example="No action">%2$s</xliff:g></string>
+    <string name="camera_key_short_title">Press</string>
+    <string name="camera_key_long_title">Press and hold</string>
+    <string name="camera_key_screen_off_title">Use with the screen off</string>
+    <string name="camera_key_screen_off_summary">Hold the button to use it while the screen is off. A short press does nothing, so it does not go off in your pocket.</string>
+    <string name="camera_key_footer">In a camera app the button works as usual: press halfway to focus, all the way to take the photo.</string>
+    <string name="camera_key_action_none">No action</string>
+    <string name="camera_key_action_camera">Open the camera</string>
+    <string name="camera_key_action_torch">Flashlight on or off</string>
+    <string name="camera_key_action_app">Open an app\u2026</string>
+    <string name="camera_key_action_app_named">Open <xliff:g id="app" example="Maps">%1$s</xliff:g></string>
+    <string name="camera_key_app_missing">Open an app (not installed)</string>
+    <string name="camera_key_pick_app">Choose an app</string>
+
     <!-- Tiles -->
     <string name="double_tap_tile_label">Double tap</string>
     <string name="tile_on">On</string>
