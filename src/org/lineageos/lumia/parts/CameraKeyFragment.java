@@ -113,6 +113,15 @@ public class CameraKeyFragment extends PreferenceFragmentCompat
     }
 
     @Override
+    public void onDisplayPreferenceDialog(Preference preference) {
+        if (preference instanceof ListPreference) {
+            ListPreferenceDialog.show(requireActivity(), (ListPreference) preference);
+        } else {
+            super.onDisplayPreferenceDialog(preference);
+        }
+    }
+
+    @Override
     public void onSettingsChanged() {
         update();
     }
