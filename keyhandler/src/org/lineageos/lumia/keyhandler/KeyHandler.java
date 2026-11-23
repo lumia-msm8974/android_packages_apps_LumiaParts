@@ -9,19 +9,27 @@ import android.app.ActivityManager;
 import android.app.ActivityTaskManager;
 import android.app.KeyguardManager;
 import android.content.ActivityNotFoundException;
+import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
+import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
 import android.hardware.camera2.CameraAccessException;
 import android.hardware.camera2.CameraCharacteristics;
 import android.hardware.camera2.CameraManager;
+import android.media.AudioAttributes;
+import android.media.AudioManager;
 import android.os.Handler;
 import android.os.PowerManager;
 import android.os.RemoteException;
 import android.os.SystemClock;
 import android.os.UserHandle;
+import android.os.VibrationEffect;
+import android.os.Vibrator;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -30,13 +38,17 @@ import android.view.WindowManagerGlobal;
 import com.android.internal.os.BackgroundThread;
 import com.android.internal.os.DeviceKeyHandler;
 
+import java.util.List;
+
 /**
  * The two-stage camera button of the MSM8974 Lumias (PM8941 GPIOs 3 and 4).
  *
  * With a camera app in front the key events go to it, so half press focuses
- * and full press takes the photo. Otherwise the button runs the actions
- * chosen in Lumia settings. With the screen off only a long press counts,
- * so the button does not fire in a pocket.
+ * and full press takes the photo. Otherwise the button runs the chosen
+ * actions. With the screen off or the phone locked only a long press counts:
+ * a short vibration says it was taken, so it can be released, and a press in
+ * a pocket does nothing. The camera app closes when the screen turns off, so
+ * the next press opens it instead of taking a photo.
  *
  * PhoneWindowManager calls this twice for a key it passes on (before
  * queueing and before dispatching): the down time tells the calls apart.
@@ -53,6 +65,12 @@ public final class KeyHandler implements DeviceKeyHandler {
     private static final long LONG_PRESS_MS = 500;
     private static final long LONG_PRESS_SCREEN_OFF_MS = 800;
     private static final long WAKE_LOCK_MS = 3000;
+    private static final long CONFIRM_VIBRATION_MS = 40;
+
+    private static final AudioAttributes VIBRATION_ATTRIBUTES = new AudioAttributes.Builder()
+            .setUsage(AudioAttributes.USAGE_ASSISTANCE_SONIFICATION)
+            .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
+            .build();
 
     private static final class Press {
         long downTime = -1;
@@ -68,7 +86,7 @@ public final class KeyHandler implements DeviceKeyHandler {
     private final Runnable mLongPress = this::onLongPress;
 
     private boolean mPassToApp;
-    private boolean mInteractive;
+    private boolean mHoldOnly;
     private boolean mLongFired;
 
     private PowerManager.WakeLock mWakeLock;
@@ -96,6 +114,12 @@ public final class KeyHandler implements DeviceKeyHandler {
 
     public KeyHandler(Context context) {
         mContext = context;
+        context.registerReceiverAsUser(new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context receiverContext, Intent intent) {
+                closeCameraOnScreenOff();
+            }
+        }, UserHandle.ALL, new IntentFilter(Intent.ACTION_SCREEN_OFF), null, mHandler);
     }
 
     @Override
@@ -130,11 +154,13 @@ public final class KeyHandler implements DeviceKeyHandler {
         }
 
         // Outside the lock: these call into the power and activity services
-        boolean interactive = false;
+        boolean holdOnly = false;
         boolean passToApp = false;
         if (first) {
-            interactive = mContext.getSystemService(PowerManager.class).isInteractive();
+            final boolean interactive =
+                    mContext.getSystemService(PowerManager.class).isInteractive();
             passToApp = interactive && isCameraInFront();
+            holdOnly = !passToApp && (!interactive || isLocked());
             if (!interactive) {
                 // The timers below do not run while the phone is suspended
                 acquireWakeLock();
@@ -146,7 +172,7 @@ public final class KeyHandler implements DeviceKeyHandler {
 
         synchronized (mLock) {
             if (first) {
-                mInteractive = interactive;
+                mHoldOnly = holdOnly;
                 mPassToApp = passToApp;
                 mLongFired = false;
             }
@@ -156,7 +182,7 @@ public final class KeyHandler implements DeviceKeyHandler {
             if (shutter && !mPassToApp) {
                 mHandler.removeCallbacks(mLongPress);
                 mHandler.postDelayed(mLongPress,
-                        mInteractive ? LONG_PRESS_MS : LONG_PRESS_SCREEN_OFF_MS);
+                        mHoldOnly ? LONG_PRESS_SCREEN_OFF_MS : LONG_PRESS_MS);
             }
             return mPassToApp ? event : null;
         }
@@ -177,7 +203,7 @@ public final class KeyHandler implements DeviceKeyHandler {
                 return passed ? event : null;
             }
             press.held = false;
-            runShort = shutter && !passed && mInteractive && !mLongFired && !event.isCanceled();
+            runShort = shutter && !passed && !mHoldOnly && !mLongFired && !event.isCanceled();
             if (shutter && !passed) {
                 mHandler.removeCallbacks(mLongPress);
             }
@@ -193,28 +219,26 @@ public final class KeyHandler implements DeviceKeyHandler {
     }
 
     private void onLongPress() {
-        final boolean interactive;
+        final boolean holdOnly;
         synchronized (mLock) {
             if (!mShutter.held || mPassToApp) {
                 return;
             }
-            interactive = mInteractive;
+            holdOnly = mHoldOnly;
         }
         final ContentResolver resolver = mContext.getContentResolver();
         String action = CameraKeyConfig.getLong(resolver);
         final boolean noLongAction = CameraKeyConfig.ACTION_NONE.equals(action);
-        if (interactive) {
-            if (noLongAction) {
-                // Nothing on hold: releasing the button still counts as a press
-                return;
-            }
-        } else {
+        if (holdOnly) {
             if (!CameraKeyConfig.isScreenOffEnabled(resolver)) {
                 return;
             }
             if (noLongAction) {
                 action = CameraKeyConfig.getShort(resolver);
             }
+        } else if (noLongAction) {
+            // Nothing on hold: releasing the button still counts as a press
+            return;
         }
         synchronized (mLock) {
             if (!mShutter.held) {
@@ -222,7 +246,33 @@ public final class KeyHandler implements DeviceKeyHandler {
             }
             mLongFired = true;
         }
-        perform(action);
+        if (!CameraKeyConfig.ACTION_NONE.equals(action)) {
+            vibrate();
+            perform(action);
+        }
+    }
+
+    private void vibrate() {
+        final Vibrator vibrator = mContext.getSystemService(Vibrator.class);
+        if (vibrator != null && vibrator.hasVibrator()) {
+            vibrator.vibrate(VibrationEffect.createOneShot(CONFIRM_VIBRATION_MS,
+                    VibrationEffect.DEFAULT_AMPLITUDE), VIBRATION_ATTRIBUTES);
+        }
+    }
+
+    /** Back to the home screen, unless the camera app is recording. */
+    private void closeCameraOnScreenOff() {
+        if (!CameraKeyConfig.isCloseOnScreenOffEnabled(mContext.getContentResolver())
+                || focusedCameraPackage() == null) {
+            return;
+        }
+        final AudioManager audio = mContext.getSystemService(AudioManager.class);
+        if (!audio.getActiveRecordingConfigurations().isEmpty()) {
+            return;
+        }
+        start(new Intent(Intent.ACTION_MAIN)
+                .addCategory(Intent.CATEGORY_HOME)
+                .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
     }
 
     private void perform(String action) {
@@ -237,25 +287,38 @@ public final class KeyHandler implements DeviceKeyHandler {
 
     /** A camera app is on screen, not just the last app behind the lock screen. */
     private boolean isCameraInFront() {
+        final String packageName = focusedCameraPackage();
+        if (packageName == null) {
+            return false;
+        }
         try {
-            ActivityManager.StackInfo stack = ActivityTaskManager.getService()
-                    .getFocusedStackInfo();
-            if (stack == null || stack.topActivity == null) {
-                return false;
-            }
-            final String packageName = stack.topActivity.getPackageName();
-            final int userId = ActivityManager.getCurrentUser();
-            final PackageManager pm = mContext.getPackageManager();
-            if (!handles(pm, MediaStore.INTENT_ACTION_STILL_IMAGE_CAMERA, packageName, userId)
-                    && !handles(pm, MediaStore.ACTION_IMAGE_CAPTURE, packageName, userId)) {
-                return false;
-            }
-            final int uid = pm.getPackageUidAsUser(packageName, userId);
+            final int uid = mContext.getPackageManager().getPackageUidAsUser(packageName,
+                    ActivityManager.getCurrentUser());
             return ActivityManager.getService().getUidProcessState(uid,
                     mContext.getOpPackageName()) == ActivityManager.PROCESS_STATE_TOP;
         } catch (RemoteException | PackageManager.NameNotFoundException | SecurityException e) {
             Log.w(TAG, "Could not read the app in front", e);
             return false;
+        }
+    }
+
+    /** The focused app if it is a camera, else null. */
+    private String focusedCameraPackage() {
+        try {
+            ActivityManager.StackInfo stack = ActivityTaskManager.getService()
+                    .getFocusedStackInfo();
+            if (stack == null || stack.topActivity == null) {
+                return null;
+            }
+            final String packageName = stack.topActivity.getPackageName();
+            final int userId = ActivityManager.getCurrentUser();
+            final PackageManager pm = mContext.getPackageManager();
+            return handles(pm, MediaStore.INTENT_ACTION_STILL_IMAGE_CAMERA, packageName, userId)
+                    || handles(pm, MediaStore.ACTION_IMAGE_CAPTURE, packageName, userId)
+                    ? packageName : null;
+        } catch (RemoteException | SecurityException e) {
+            Log.w(TAG, "Could not read the app in front", e);
+            return null;
         }
     }
 
@@ -275,12 +338,49 @@ public final class KeyHandler implements DeviceKeyHandler {
     }
 
     private void launchCamera() {
-        final Intent intent = new Intent(isLocked()
+        final boolean locked = isLocked();
+        final Intent intent = new Intent(locked
                 ? MediaStore.INTENT_ACTION_STILL_IMAGE_CAMERA_SECURE
                 : MediaStore.INTENT_ACTION_STILL_IMAGE_CAMERA);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        if (locked) {
+            preferSecureCamera(intent);
+        }
         wakeUp();
         start(intent);
+    }
+
+    /**
+     * With several camera apps the lock screen would show a chooser: use the
+     * default camera if it has a secure mode, else a system one.
+     */
+    private void preferSecureCamera(Intent intent) {
+        final int userId = ActivityManager.getCurrentUser();
+        final PackageManager pm = mContext.getPackageManager();
+        final List<ResolveInfo> apps = pm.queryIntentActivitiesAsUser(intent,
+                PackageManager.MATCH_DEFAULT_ONLY, userId);
+        if (apps.size() < 2) {
+            return;
+        }
+        final ResolveInfo preferred = pm.resolveActivityAsUser(
+                new Intent(MediaStore.INTENT_ACTION_STILL_IMAGE_CAMERA),
+                PackageManager.MATCH_DEFAULT_ONLY, userId);
+        final String defaultPackage =
+                preferred == null ? null : preferred.activityInfo.packageName;
+        ResolveInfo chosen = null;
+        for (ResolveInfo app : apps) {
+            if (app.activityInfo.packageName.equals(defaultPackage)) {
+                chosen = app;
+                break;
+            }
+            if (chosen == null
+                    && (app.activityInfo.applicationInfo.flags & ApplicationInfo.FLAG_SYSTEM) != 0) {
+                chosen = app;
+            }
+        }
+        if (chosen != null) {
+            intent.setPackage(chosen.activityInfo.packageName);
+        }
     }
 
     private void launchApp(ComponentName component) {

@@ -64,8 +64,10 @@
     <string name="camera_key_summary">Pressione: <xliff:g id="press" example="Apri la fotocamera">%1$s</xliff:g>. Tenuto premuto: <xliff:g id="hold" example="Nessuna azione">%2$s</xliff:g></string>
     <string name="camera_key_short_title">Pressione breve</string>
     <string name="camera_key_long_title">Tieni premuto</string>
-    <string name="camera_key_screen_off_title">Usa a schermo spento</string>
-    <string name="camera_key_screen_off_summary">Tieni premuto il tasto per usarlo a schermo spento. La pressione breve non fa nulla, così non si attiva in tasca.</string>
+    <string name="camera_key_screen_off_title">Usa da spento o bloccato</string>
+    <string name="camera_key_screen_off_summary">Tieni premuto il tasto finché non vibra. La pressione breve non fa nulla, così non si attiva in tasca.</string>
+    <string name="camera_key_close_title">Chiudi la fotocamera a schermo spento</string>
+    <string name="camera_key_close_summary">La pressione successiva apre la fotocamera invece di scattare.</string>
     <string name="camera_key_footer">In un\'app fotocamera il tasto funziona come sempre: a metà mette a fuoco, premuto fino in fondo scatta.</string>
     <string name="camera_key_action_none">Nessuna azione</string>
     <string name="camera_key_action_camera">Apri la fotocamera</string>

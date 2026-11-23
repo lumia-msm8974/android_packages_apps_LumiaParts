@@ -64,8 +64,10 @@
     <string name="camera_key_summary">Press: <xliff:g id="press" example="Open the camera">%1$s</xliff:g>. Hold: <xliff:g id="hold" example="No action">%2$s</xliff:g></string>
     <string name="camera_key_short_title">Press</string>
     <string name="camera_key_long_title">Press and hold</string>
-    <string name="camera_key_screen_off_title">Use with the screen off</string>
-    <string name="camera_key_screen_off_summary">Hold the button to use it while the screen is off. A short press does nothing, so it does not go off in your pocket.</string>
+    <string name="camera_key_screen_off_title">Use when off or locked</string>
+    <string name="camera_key_screen_off_summary">Hold the button until it vibrates. A short press does nothing, so it does not go off in your pocket.</string>
+    <string name="camera_key_close_title">Close the camera when the screen turns off</string>
+    <string name="camera_key_close_summary">The next press opens the camera instead of taking a photo.</string>
     <string name="camera_key_footer">In a camera app the button works as usual: press halfway to focus, all the way to take the photo.</string>
     <string name="camera_key_action_none">No action</string>
     <string name="camera_key_action_camera">Open the camera</string>

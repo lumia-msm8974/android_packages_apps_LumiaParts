@@ -21,6 +21,8 @@ public final class CameraKeyConfig {
     public static final String SETTING_SHORT = "lumia_camera_key_short";
     public static final String SETTING_LONG = "lumia_camera_key_long";
     public static final String SETTING_SCREEN_OFF = "lumia_camera_key_screen_off";
+    public static final String SETTING_CLOSE_ON_SCREEN_OFF =
+            "lumia_camera_key_close_on_screen_off";
 
     public static final String ACTION_NONE = "none";
     public static final String ACTION_CAMERA = "camera";
@@ -59,6 +61,16 @@ public final class CameraKeyConfig {
 
     public static void setScreenOffEnabled(ContentResolver resolver, boolean enabled) {
         Settings.Secure.putIntForUser(resolver, SETTING_SCREEN_OFF, enabled ? 1 : 0,
+                UserHandle.USER_CURRENT);
+    }
+
+    public static boolean isCloseOnScreenOffEnabled(ContentResolver resolver) {
+        return Settings.Secure.getIntForUser(resolver, SETTING_CLOSE_ON_SCREEN_OFF, 1,
+                UserHandle.USER_CURRENT) != 0;
+    }
+
+    public static void setCloseOnScreenOffEnabled(ContentResolver resolver, boolean enabled) {
+        Settings.Secure.putIntForUser(resolver, SETTING_CLOSE_ON_SCREEN_OFF, enabled ? 1 : 0,
                 UserHandle.USER_CURRENT);
     }
 

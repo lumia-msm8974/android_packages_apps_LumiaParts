@@ -24,6 +24,12 @@
         android:summary="@string/camera_key_screen_off_summary"
         android:persistent="false" />
 
+    <SwitchPreference
+        android:key="camera_key_close_on_screen_off"
+        android:title="@string/camera_key_close_title"
+        android:summary="@string/camera_key_close_summary"
+        android:persistent="false" />
+
     <Preference
         android:key="camera_key_footer"
         android:summary="@string/camera_key_footer"

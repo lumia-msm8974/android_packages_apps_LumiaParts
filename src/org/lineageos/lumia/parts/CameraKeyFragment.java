@@ -38,6 +38,7 @@ public class CameraKeyFragment extends PreferenceFragmentCompat
     private ListPreference mShort;
     private ListPreference mLong;
     private SwitchPreference mScreenOff;
+    private SwitchPreference mCloseOnScreenOff;
     private SettingsObserver mObserver;
 
     private static final class AppEntry {
@@ -80,17 +81,20 @@ public class CameraKeyFragment extends PreferenceFragmentCompat
         mShort = findPreference("camera_key_short");
         mLong = findPreference("camera_key_long");
         mScreenOff = findPreference("camera_key_screen_off");
+        mCloseOnScreenOff = findPreference("camera_key_close_on_screen_off");
         for (ListPreference list : new ListPreference[] {mShort, mLong}) {
             list.setEntries(entryArray);
             list.setEntryValues(valueArray);
             list.setOnPreferenceChangeListener(this);
         }
         mScreenOff.setOnPreferenceChangeListener(this);
+        mCloseOnScreenOff.setOnPreferenceChangeListener(this);
 
         mObserver = new SettingsObserver(context, this,
                 CameraKeyConfig.uri(CameraKeyConfig.SETTING_SHORT),
                 CameraKeyConfig.uri(CameraKeyConfig.SETTING_LONG),
-                CameraKeyConfig.uri(CameraKeyConfig.SETTING_SCREEN_OFF));
+                CameraKeyConfig.uri(CameraKeyConfig.SETTING_SCREEN_OFF),
+                CameraKeyConfig.uri(CameraKeyConfig.SETTING_CLOSE_ON_SCREEN_OFF));
     }
 
     private static void addAction(List<CharSequence> entries, List<CharSequence> values,
@@ -135,6 +139,7 @@ public class CameraKeyFragment extends PreferenceFragmentCompat
         show(context, mShort, CameraKeyConfig.getShort(resolver));
         show(context, mLong, CameraKeyConfig.getLong(resolver));
         mScreenOff.setChecked(CameraKeyConfig.isScreenOffEnabled(resolver));
+        mCloseOnScreenOff.setChecked(CameraKeyConfig.isCloseOnScreenOffEnabled(resolver));
     }
 
     private static void show(Context context, ListPreference list, String action) {
@@ -147,6 +152,10 @@ public class CameraKeyFragment extends PreferenceFragmentCompat
         ContentResolver resolver = requireContext().getContentResolver();
         if (preference == mScreenOff) {
             CameraKeyConfig.setScreenOffEnabled(resolver, (Boolean) newValue);
+            return true;
+        }
+        if (preference == mCloseOnScreenOff) {
+            CameraKeyConfig.setCloseOnScreenOffEnabled(resolver, (Boolean) newValue);
             return true;
         }
         String setting = preference == mShort
